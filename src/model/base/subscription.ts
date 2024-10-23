@@ -1,5 +1,5 @@
 // Modelo de Assinatura (Subscription)
-export interface Subscription {
+export interface PagSeguroSubscription {
   // ID da assinatura no formato SUBS_UUID (41 caracteres)
   id?: string; // Exemplo: "SUBS_ABBCAE87-7435-4DB5-B371-CDE4A8B7C885"
 

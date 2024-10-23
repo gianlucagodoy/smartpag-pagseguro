@@ -1,22 +1,27 @@
-import { Plan } from "./model/base/plan";
-import { Subscribe } from "./model/base/subscriber";
-import { Subscription } from "./model/base/subscription";
-import { PlanRequest } from "./model/plan_resquest";
-import { SubscriberRequest, SubscriberRequestBillingInfo } from "./model/subscriber_request";
-import { SubscriptionRequest } from "./model/subscription_requets";
-import { generateIdempotencyKey } from "./utils/cripto";
+import { Plan } from "./src/model/base/plan";
+import { Subscribe } from "./src/model/base/subscriber";
+import { PagSeguroSubscription } from "./src/model/base/subscription";
+import { PlanRequest } from "./src/model/plan_resquest";
+import { SubscriberRequest, SubscriberRequestBillingInfo } from "./src/model/subscriber_request";
+import { PagSeguroSubscriptionRequest } from "./src/model/subscription_requets";
+import { generateIdempotencyKey } from "./src/utils/cripto";
+export * from './src/model/subscription_requets';
+export * from './src/model/subscription_requets';
+export * from './src/model/plan_resquest';
+export * from './src/model/base/plan';
+export * from './src/model/base/subscriber';
+export * from './src/model/base/subscription';
+
 
 export default class ApiPagseguro {
     
     private url: string;
     private token: string;
 
-    constructor(url: string, token: string) {
-        this.url = url;
+    constructor(isSandbox: boolean, token: string) {
+        this.url = isSandbox ? "https://sandbox.api.assinaturas.pagseguro.com" : "https://pagseguro.uol.com.br";
         this.token = token;
     }
-
-
     /**
     *                          Assinaturas
     */
@@ -29,9 +34,9 @@ export default class ApiPagseguro {
     * você pode fornecer apenas o id, no formato CUST_XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX, 
     * recebido no momento da sua criação.
     * @constructor
-    * @param {SubscriptionRequest} request - JSON estruturado com os parâmetros do body em https://developer.pagbank.com.br/reference/criar-assinatura
+    * @param {PagSeguroSubscriptionRequest} request - JSON estruturado com os parâmetros do body em https://developer.pagbank.com.br/reference/criar-assinatura
     */
-   public async createSubscription(request: SubscriptionRequest): Promise<Subscription | null> {
+   public async createSubscription(request: PagSeguroSubscriptionRequest): Promise<PagSeguroSubscription | null> {
         const options: RequestInit = {
             method: 'POST',
             headers: {
@@ -64,7 +69,7 @@ export default class ApiPagseguro {
     * da assinatura foi enviado na resposta do processo de criação.
     * https://developer.pagbank.com.br/reference/consultar-assinatura
     */
-   public async getSubscriptionById(subscription_id: string): Promise<Subscription | null> {
+   public async getSubscriptionById(subscription_id: string): Promise<PagSeguroSubscription | null> {
         const options: RequestInit = {
             method: 'GET',
             headers: {
@@ -93,7 +98,7 @@ export default class ApiPagseguro {
     * Utilize esse recurso para recuperar os dados de todas as assinaturas associadas a sua conta.
     * https://developer.pagbank.com.br/reference/listar-assinaturas
     */
-   public async getAllSubscription(reference_id?: string, status?: string[],payment_method_type?: string[],created_at_start?: Date, created_at_end?: Date): Promise<Subscription[] | null> {
+   public async getAllSubscription(reference_id?: string, status?: string[],payment_method_type?: string[],created_at_start?: Date, created_at_end?: Date, q?:string): Promise<PagSeguroSubscription[] | null> {
        const queryParams: string[] = [];
         // Verifica se cada parâmetro opcional foi passado e adiciona ao array de queryParams
         if (reference_id !== undefined) queryParams.push(`reference_id=${encodeURIComponent(reference_id)}`);
@@ -108,7 +113,8 @@ export default class ApiPagseguro {
                 accept: 'application/json',
                 Authorization: 'Bearer ' + this.token,
             },
-         };
+       };
+       if (q !== undefined) (options.headers as Record<string, string>)['q'] = q;
 
         try {
             const response: Response = await fetch(this.url + '/subscriptions' + queryString, options);
@@ -168,7 +174,7 @@ export default class ApiPagseguro {
     * Você pode aplicar cupons de desconto ou alterar a data do pagamento, por exemplo.
     * https://developer.pagbank.com.br/reference/alterar-assinatura
     */
-   public async editSubscription(subscription_id:string,requets: SubscriptionRequest ): Promise<Subscription | null> {
+   public async editSubscription(subscription_id:string,requets: PagSeguroSubscriptionRequest ): Promise<PagSeguroSubscription | null> {
         const options: RequestInit = {
             method: 'PUT',
             headers: {
@@ -566,7 +572,7 @@ export default class ApiPagseguro {
     * Você pode configurar o retorno utilizando o recurso de paginação para melhorar a organização das informações.
     * https://developer.pagbank.com.br/reference/listar-planos
     */
-   public async getAllPlans(): Promise<Array<Plan[] > | null> {
+   public async getAllPlans(): Promise<Plan[]  | null> {
         const options: RequestInit = {
             method: 'GET',
             headers: {
@@ -672,17 +678,6 @@ export default class ApiPagseguro {
             console.error('Erro ao desativar plano:', err);
             return null; // Retorna null em caso de erro
         }
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    } 
     
 }

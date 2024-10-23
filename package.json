@@ -1,6 +1,6 @@
 {
   "name": "smartpag-pagseguro",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "SmartPag PagSeguro API wrapper",
   "keywords": [
     "pagseguro",
@@ -12,14 +12,14 @@
   "contributors": [],
   "repository": {
     "type": "git",
-    "url": "git://github.com/stripe/stripe-node.git"
+    "url": "https://github.com/gianlucagodoy/smartpag-pagseguro.git"
   },
-  "bugs": "https://github.com/stripe/stripe-node/issues",
+  "bugs": "https://github.com/gianlucagodoy/smartpag-pagseguro/issues",
   "engines": {
     "node": ">=12.*"
   },
-  "main": "cjs/pagseguro.cjs.node.js",
-  "types": "types/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "devDependencies": {
     "@types/chai": "^4.3.4",
     "@types/chai-as-promised": "^7.1.5",
@@ -54,37 +54,6 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "yarn build-esm && yarn build-cjs",
-    "build-esm": "mkdir -p esm && tsc -p tsconfig.esm.json && echo '{\"type\":\"module\"}' > esm/package.json",
-    "build-cjs": "mkdir -p cjs && tsc -p tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > cjs/package.json",
-    "clean": "rm -rf ./.nyc_output ./node_modules/.cache ./coverage ./esm ./cjs",
-    "prepack": "yarn install && yarn build",
-    "mocha": "nyc mocha",
-    "mocha-only": "mocha",
-    "test": "yarn build && yarn test-typescript && yarn mocha",
-    "test-typescript": "tsc --build types/test",
-    "lint": "eslint --ext .js,.jsx,.ts .",
-    "fix": "yarn lint --fix && ./scripts/updateAPIVersion.js",
-    "report": "nyc -r text -r lcov report",
-    "coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
-  },
-  "exports": {
-    "types": "./types/index.d.ts",
-    "browser": {
-      "import": "./esm/pagseguro.esm.worker.js",
-      "require": "./cjs/pagseguro.cjs.worker.js"
-    },
-    "deno": {
-      "import": "./esm/pagseguro.esm.worker.js",
-      "require": "./cjs/pagseguro.cjs.worker.js"
-    },
-    "worker": {
-      "import": "./esm/pagseguro.esm.worker.js",
-      "require": "./cjs/pagseguro.cjs.worker.js"
-    },
-    "default": {
-      "import": "./esm/pagseguro.esm.node.js",
-      "require": "./cjs/pagseguro.cjs.node.js"
-    }
+    "build": "tsc"
   }
 }

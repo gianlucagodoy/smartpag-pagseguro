@@ -1,7 +1,7 @@
 import { SubscriberRequest } from "./subscriber_request";
 
 // Request para criar uma nova Assinatura (Subscription)
-export interface SubscriptionRequest {
+export interface PagSeguroSubscriptionRequest {
   // Código externo informado pelo merchant
   reference_id?: string; // Exemplo: "subscription-h"
 
@@ -39,8 +39,8 @@ export interface SubscriptionRequest {
 
   // Data da melhor fatura
   best_invoice_date?: {
-    day?: number;   // Dia da melhor data de fatura (Exemplo: 1)
-    month?: number; // Mês da melhor data de fatura (Exemplo: 12)
+    day?: string;   // Dia da melhor data de fatura (Exemplo: 1)
+    month?: string; // Mês da melhor data de fatura (Exemplo: 12)
   };
  next_invoice_at?: Date
 }
